@@ -25,3 +25,6 @@
 ...
 
 releases里是自用的VS滤镜和脚本包，可选择性使用。  
+
+Thanks to the author of the filters and scripts.  
+I'm just a collector.
