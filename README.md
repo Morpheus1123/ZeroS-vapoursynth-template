@@ -22,9 +22,8 @@
 18.NNEDI3_resize16的分辨率放大  
 19.补偿性锐化（LSFmod和Awarpsharp2）  
 20.位深改变（fmtc.bitdepth）  
-...
+...  
 
-releases里是自用的VS滤镜和脚本包，可选择性使用。  
-
-Thanks to the author of the filters and scripts.  
-I'm just a collector.
+自用VS滤镜和脚本收集：https://1drv.ms/f/s!AnNR9fAbPdHFolsh-kHl_JTiZRB9  
+描述：对mawen 20170511的滤镜收集进行更新，并且添加新滤镜，删掉一些我用不到的滤镜。  
+感谢mawen大佬和众多滤镜和脚本的作者。
