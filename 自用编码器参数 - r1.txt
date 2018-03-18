@@ -1,0 +1,52 @@
+自用X264 X265 nvencc参数
+作者：零杀十一死
+
+说明：
+1.x264参数只适用于X264 7mod版。x265只适用于官方版。NVENCC适用于最新版，不要使用simple x264 launcher启动nvencc。
+2.keyint是gop长度，即决定多少秒一个I帧。帧率 x 至少N秒一个I帧 = keyint，这样设置。
+3.--input-range tv --range tv --colorprim bt709 --transfer bt709 --colormatrix bt709根据自己压的视频修改。
+4.先去学编码器参数，再来参考我的参数。盲目抄袭纯属傻逼。
+5.NVENCC参数只适用于GTX950-GTX980TI，不适用10系显卡。10系显卡增加了HEVC压制和加权P帧预测功能，自行根据说明修改。
+
+1. X264 8bit：crf21 slower level4.1
+该参数可以用在720P60和1080P30上。不能用在1080P60上，因为超过了level4.1的限制。该参数输出的视频可以在绝大多数设备上硬解。该参数性价比较高，属于中高质量性价比压制。涉及到的参数可以自行微调，如需提高质量，在拉低crf的同时要注意deblock，qcomp，AQ，PSY参数的调整。
+--crf 21.0 --preset slower --profile high --level 4.1 --deblock -1:-1 --keyint 300 --min-keyint 1 --bframes 8 --vbv-bufsize auto_high --vbv-maxrate auto_high --qcomp 0.6 --aq-mode 3 --aq-strength 0.8 --psy-rd 1.00:0.05 --input-range tv --range tv --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+2. X264 8bit：crf21 slower unlimited
+和1的区别是无视硬解需求，即没有level限制。min-keyint一般设置为keyint的十分之一，保持1也可以，这个参数决定有没有小i帧。
+--crf 21.0 --preset slower --profile high --deblock -1:-1 --keyint 300 --min-keyint 30 --bframes 8 --qcomp 0.6 --aq-mode 3 --aq-strength 0.8 --psy-rd 1.00:0.05 --input-range tv --range tv --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+3. X264 10bit：crf15 slower unlimited
+输入必须是10bit。适合极高质量压制电影。
+--crf 15.0 --preset slower --profile high --deblock -3:-3 --keyint 240 --min-keyint 24 --bframes 16 --qcomp 0.75 --aq-mode 4 --aq-strength 1.1 --psy-rd 1.15:0.15 --rc-lookahead 120 --no-fast-pskip --input-depth 10 --input-range tv --range tv --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+4. X264 10bit：crf18 slower unlimited
+输入必须是10bit。适合高质量压制电影。一般来说这个参数就已经无法通过肉眼看出区别了。
+--crf 18.0 --preset slower --profile high --deblock -3:-1 --keyint 240 --min-keyint 24 --bframes 8 --qcomp 0.75 --aq-mode 4 --aq-strength 1.1 --psy-rd 1.05:0.15 --rc-lookahead 120 --no-fast-pskip --input-depth 10 --input-range tv --range tv --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+5. X265 10bit：crf18 slower
+输入必须是10bit。适合极高质量压制电影。
+-D 10 --crf 28.0 --preset slower --profile main10 --ref 6 --bframes 8 --keyint 240 --min-keyint 1 --no-open-gop --qcomp 0.70 --aq-mode 1 --aq-strength 1.1 --psy-rd 2.0 --psy-rdoq 1.0 --rdoq-level 2 --cbqpoffs -3 --crqpoffs -3 --rc-lookahead 120 --rd 5 --merange 32 --ctu 32 --no-sao --no-strong-intra-smoothing --no-rect --no-amp --deblock -3:-3 --input-depth 10 --range limited --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+6. X265 10bit：crf23 slower
+输入必须是10bit。属于高质量性价比压制.
+-D 10 --crf 23.0 --preset slower --profile main10 --ref 6 --bframes 8 --keyint 240 --min-keyint 1 --no-open-gop --qcomp 0.65 --aq-mode 3 --aq-strength 0.8 --psy-rd 2.0 --psy-rdoq 1.0 --rdoq-level 2 --cbqpoffs -2 --crqpoffs -2 --rc-lookahead 120 --rd 5 --ctu 32 --no-sao --no-strong-intra-smoothing --no-rect --no-amp --deblock -1:-1 --input-depth 10 --range limited --colorprim bt709 --transfer bt709 --colormatrix bt709
+
+7. NvencC.H264：VPY to .264 3000kbps level4.1
+输入vpy，输出.264视频流。同样只能用在720P60和1080P30上。不能用在1080P60上。
+NVEncC64 --device 0 --vpy-mt --codec h264 --cabac --deblock --profile high --level 4.1 --sar 1:1 --vbrhq 3000 --preset quality --lookahead 32 --bframes 4 --ref 9 --aq --aq-temporal --aq-strength 7 --mv-precision Q-pel --colormatrix bt709 --colorprim bt709 --transfer bt709 --output-format raw -i "G:\DGNVindex\AAA\AAA.vpy" -o "G:\DGNVindex\AAA\AAA.264"
+
+8. NvencC.H264：video to .264 3000kbps level4.1
+输入视频，输出.264视频流。使用内建spline36滤镜缩放至720P，如不需要，手动删掉--input-res 1920x1080 --output-res 1280x720 --vpp-resize spline36三个参数。
+NVEncC64 --device 0 --codec h264 --cabac --deblock --profile high --level 4.1 --sar 1:1 --vbrhq 3000 --preset quality --lookahead 32 --bframes 4 --ref 9 --aq --aq-temporal --aq-strength 7 --mv-precision Q-pel --colormatrix bt709 --colorprim bt709 --transfer bt709 --input-res 1920x1080 --output-res 1280x720 --vpp-resize spline36 --output-format raw -i "G:\DGNVindex\AAAAAA.mp4" -o "G:\DGNVindex\AAA\AAA.264"
+
+9. NvencC.H264：VPY to .264 3000kbps unlimited
+输入vpy，输出.264视频流。没有level限制。
+NVEncC64 --device 0 --vpy-mt --codec h264 --cabac --deblock --profile high --sar 1:1 --vbrhq 3000 --preset quality --lookahead 32 --bframes 4 --ref 16 --aq --aq-temporal --aq-strength 7 --mv-precision Q-pel --colormatrix bt709 --colorprim bt709 --transfer bt709 --output-format raw -i "G:\DGNVindex\AAA\AAA.vpy" -o "G:\DGNVindex\AAA\AAA.264"
+
+10. NvencC.H264：video to .264 3000kbps unlimited
+输入vpy，输出.264视频流。没有level限制。使用内建spline36滤镜缩放至720P，如不需要，手动删掉--input-res 1920x1080 --output-res 1280x720 --vpp-resize spline36三个参数。
+NVEncC64 --device 0 --codec h264 --cabac --deblock --profile high --sar 1:1 --vbrhq 3000 --preset quality --lookahead 32 --bframes 4 --ref 16 --aq --aq-temporal --aq-strength 7 --mv-precision Q-pel --colormatrix bt709 --colorprim bt709 --transfer bt709 --input-res 1920x1080 --output-res 1280x720 --vpp-resize spline36 --output-format raw -i "G:\DGNVindex\AAAAAA.mp4" -o "G:\DGNVindex\AAA\AAA.264"
+
+changelog：
+r1：首次发布。
